@@ -68,7 +68,7 @@ def movement(settings, **changes):
         "TST2",
         latitude=settings.airport_latitude + 0.1,
         longitude=settings.airport_longitude,
-        barometric_altitude_ft=7000,
+        barometric_altitude_ft=4000,
         vertical_rate_fpm=-500,
         on_ground=False,
         position_age_seconds=5,
@@ -93,9 +93,9 @@ def test_bratislava_destination_never_unusual(database, settings, now, destinati
 @pytest.mark.parametrize(
     ("changes", "triggers"),
     [
-        ({"barometric_altitude_ft": 7999}, True),
-        ({"barometric_altitude_ft": 8000}, False),
-        ({"barometric_altitude_ft": 9000}, False),
+        ({"barometric_altitude_ft": 4999}, True),
+        ({"barometric_altitude_ft": 5000}, False),
+        ({"barometric_altitude_ft": 6000}, False),
         ({"vertical_rate_fpm": 100}, False),
         ({"vertical_rate_fpm": 0}, False),
         ({"vertical_rate_fpm": -99}, False),
@@ -110,9 +110,9 @@ def test_unusual_boundaries(database, settings, now, changes, triggers):
 
 
 def test_distance_boundary_and_outside(database, settings, now, monkeypatch):
-    monkeypatch.setattr("lzib_movements.alerts.rules.great_circle_distance_km", lambda *a: 40.0)
+    monkeypatch.setattr("lzib_movements.alerts.rules.great_circle_distance_km", lambda *a: 20.0)
     assert unusual_movement(movement(settings), settings, database, now)
-    monkeypatch.setattr("lzib_movements.alerts.rules.great_circle_distance_km", lambda *a: 40.001)
+    monkeypatch.setattr("lzib_movements.alerts.rules.great_circle_distance_km", lambda *a: 20.001)
     assert unusual_movement(movement(settings, icao_hex="outside"), settings, database, now) is None
 
 
@@ -125,7 +125,7 @@ def test_observation_descent_fallback_and_duplicate(database, settings, now):
         Observation(
             "def456",
             now - timedelta(seconds=60),
-            7500,
+            4500,
             distance + 1,
             plane.latitude,
             plane.longitude,

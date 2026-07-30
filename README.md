@@ -14,10 +14,10 @@ One Airplanes.live geographic query (default 250 NM) is reused for both rule set
   “Special-livery aircraft” alert; the special list takes priority over the ignored list. An
   ignored registration produces no registration alert. Every other known registration produces
   an “Unusual aircraft registration” alert. A missing registration never produces this alert.
-* **Unusual Movements** — an airborne aircraft at **exactly or within 40 km**, **strictly below
-  8,000 ft**, descending by at least 100 ft/min, with a recent position, whose destination is
+* **Unusual Movements** — an airborne aircraft at **exactly or within 20 km**, **strictly below
+  5,000 ft**, descending by at least 100 ft/min, with a recent position, whose destination is
   unknown or matched somewhere other than BTS/LZIB. Recent obvious LZIB departures and duplicate
-  movements are suppressed. Exactly 40 km is included; exactly 8,000 ft is excluded.
+  movements are suppressed. Exactly 20 km is included; exactly 5,000 ft is excluded.
 
 VRS data is historical standing data, **not an official live filed flight plan**. Discord wording
 says “Route database match: ORIGIN → DESTINATION”; it never says confirmed destination. Routes may

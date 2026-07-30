@@ -93,7 +93,7 @@ class StubProvider:
                 "TST1",
                 latitude=48.2,
                 longitude=17.2,
-                barometric_altitude_ft=7000,
+                barometric_altitude_ft=4000,
                 vertical_rate_fpm=-500,
                 on_ground=False,
                 position_age_seconds=1,

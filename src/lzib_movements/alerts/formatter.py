@@ -14,7 +14,7 @@ def format_embed(decision: AlertDecision, detected_at: datetime, timezone: str) 
         "Unusual Movement Alert — Bratislava" if unusual else "Special Arrival Alert — Bratislava"
     )
     description = (
-        "An aircraft is descending below 8,000 feet within 40 km of Bratislava Airport. "
+        "An aircraft is descending below 5,000 feet within 20 km of Bratislava Airport. "
         "Its destination is unknown or is matched to an airport other than Bratislava. "
         "This movement is not confirmed as an arrival at LZIB."
         if unusual

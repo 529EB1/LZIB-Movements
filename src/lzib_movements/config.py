@@ -35,8 +35,8 @@ class Settings:
     poll_interval_seconds: int = 300
     daily_request_limit: int = 500
     request_reserve: int = 40
-    unusual_radius_km: float = 40
-    unusual_max_altitude_ft: float = 8000
+    unusual_radius_km: float = 20
+    unusual_max_altitude_ft: float = 5000
     min_descent_rate_fpm: float = 100
     max_position_age_seconds: float = 120
     alert_cooldown_hours: float = 12
@@ -67,8 +67,8 @@ class Settings:
             poll_interval_seconds=int(e.get("AIRPLANES_LIVE_POLL_INTERVAL_SECONDS", 300)),
             daily_request_limit=int(e.get("AIRPLANES_LIVE_DAILY_REQUEST_LIMIT", 500)),
             request_reserve=int(e.get("AIRPLANES_LIVE_REQUEST_RESERVE", 40)),
-            unusual_radius_km=float(e.get("UNUSUAL_MOVEMENT_RADIUS_KM", 40)),
-            unusual_max_altitude_ft=float(e.get("UNUSUAL_MOVEMENT_MAX_ALTITUDE_FT", 8000)),
+            unusual_radius_km=float(e.get("UNUSUAL_MOVEMENT_RADIUS_KM", 20)),
+            unusual_max_altitude_ft=float(e.get("UNUSUAL_MOVEMENT_MAX_ALTITUDE_FT", 5000)),
             min_descent_rate_fpm=float(e.get("UNUSUAL_MOVEMENT_MIN_DESCENT_RATE_FPM", 100)),
             max_position_age_seconds=float(e.get("MAX_POSITION_AGE_SECONDS", 120)),
             alert_cooldown_hours=float(e.get("ALERT_COOLDOWN_HOURS", 12)),
