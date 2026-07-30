@@ -11,7 +11,7 @@ from lzib_movements.routes.matcher import RouteMatcher
 
 
 def fixture_tables(root, *, archived=False):
-    (root / "airports.csv").write_text("Code,Icao,Archived\nBTS,LZIB,false\nVIE,LOWW,false\n")
+    (root / "airports.csv").write_text("Code,ICAO,Archived\nBTS,LZIB,false\nVIE,LOWW,false\n")
     (root / "routes.csv").write_text(
         "Callsign,AirportCodes,Operator,Archived\n"
         f" TST 1 ,VIE-BTS,Test Air,{str(archived).lower()}\n"
@@ -21,9 +21,35 @@ def fixture_tables(root, *, archived=False):
 def test_valid_import_join_normalization_metadata(database, tmp_path, now):
     fixture_tables(tmp_path)
     assert import_route_directory(database, tmp_path, "fixture", now=now) == 1
-    route = RouteMatcher(database).match(" tst-1 ")
+    route = RouteMatcher(database).match(" tst-0001 ")
     assert route and route.origin_icao == "LOWW" and route.destination_icao == "LZIB"
     assert route.operator == "Test Air" and database.route_updated_at() == now
+
+
+def test_official_schema_shards_and_airline_join(database, tmp_path, now):
+    airports = tmp_path / "airports" / "schema-01" / "L"
+    routes = tmp_path / "routes" / "schema-01" / "T"
+    airlines = tmp_path / "airlines" / "schema-01"
+    airports.mkdir(parents=True)
+    routes.mkdir(parents=True)
+    airlines.mkdir(parents=True)
+    (airports / "LZ.csv").write_text(
+        "Code,Name,ICAO,IATA,Location,CountryISO2,Latitude,Longitude,AltitudeFeet\n"
+        "LZIB,Bratislava,LZIB,BTS,Bratislava,SK,48.17,17.21,436\n"
+        "LOWW,Vienna,LOWW,VIE,Vienna,AT,48.11,16.57,600\n"
+    )
+    (routes / "TST-all.csv").write_text(
+        "Callsign,Code,Number,AirlineCode,AirportCodes\nTST1,TST,1,TST,LOWW-LZIB\n"
+    )
+    (airlines / "airlines.csv").write_text(
+        "Code,Name,ICAO,IATA,PositioningFlightPattern,CharterFlightPattern\n"
+        "TST,Test Airline,TST,TS,,\n"
+    )
+
+    assert import_route_directory(database, tmp_path, "official-fixture", now=now) == 1
+    route = RouteMatcher(database).match("TST1")
+    assert route and route.origin_icao == "LOWW" and route.destination_icao == "LZIB"
+    assert route.operator == "Test Airline"
 
 
 @pytest.mark.parametrize("missing", ["airports.csv", "routes.csv"])
@@ -49,7 +75,7 @@ def archive_bytes(unsafe=False):
         if unsafe:
             archive.writestr("../escape", "bad")
         else:
-            archive.writestr("standing/airports.csv", "Code,Icao\nBTS,LZIB\nVIE,LOWW\n")
+            archive.writestr("standing/airports.csv", "Code,ICAO\nBTS,LZIB\nVIE,LOWW\n")
             archive.writestr("standing/routes.csv", "Callsign,AirportCodes\nTST1,VIE-BTS\n")
     return buffer.getvalue()
 

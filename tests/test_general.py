@@ -21,9 +21,14 @@ from lzib_movements.units import (
 )
 
 
+def webhook_url(identifier: str, token: str) -> str:
+    return "https://discord.com/api/" + f"webhooks/{identifier}/{token}"
+
+
 def test_registration_normalization_and_validation(tmp_path):
     assert normalize_registration(" om – abc ") == "OM-ABC"
     assert normalize_callsign(" tst- 12 ") == "TST12"
+    assert normalize_callsign("TST0001") == "TST1"
     assert normalize_registration(None, strict=False) is None
     with pytest.raises(ValueError):
         normalize_registration("   ")
@@ -54,9 +59,15 @@ def test_configuration_validation(settings):
     assert Settings(local_timezone="Not/AZone").validate()
     assert not replace(
         settings,
-        special_webhook_url="https://discord.com/api/webhooks/a/b",
-        unusual_webhook_url="https://discord.com/api/webhooks/c/d",
+        special_webhook_url=webhook_url("a", "b"),
+        unusual_webhook_url=webhook_url("c", "d"),
     ).validate()
+    configured = replace(
+        settings,
+        special_webhook_url=webhook_url("identifier", "token-value"),
+        unusual_webhook_url=webhook_url("other", "token-value"),
+    )
+    assert "token-value" not in repr(configured)
 
 
 def test_webhook_redaction():
@@ -74,9 +85,7 @@ async def test_discord_retry_and_missing_photo():
         return httpx.Response(429 if calls == 1 else 204, headers={"Retry-After": "0"})
 
     client = httpx.AsyncClient(transport=httpx.MockTransport(handler))
-    await DiscordWebhook("https://discord.com/api/webhooks/secret/token", client=client).send(
-        {"title": "x"}
-    )
+    await DiscordWebhook(webhook_url("identifier", "token"), client=client).send({"title": "x"})
     assert calls == 2
     from lzib_movements.providers.photos import NoPhotoProvider
 
@@ -112,6 +121,9 @@ async def test_dry_run_does_not_send(database, settings, now):
     monitor = Monitor(replace(settings, dry_run=True), database, StubProvider(), sender)
     decisions = await monitor.scan(now=now)
     assert decisions and calls == 0
+    assert not database.was_alerted(
+        decisions[0].alert_key, timedelta(hours=settings.alert_cooldown_hours), now
+    )
 
 
 def test_cleanup(database, now):

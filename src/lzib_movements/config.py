@@ -1,7 +1,7 @@
 """Environment-backed application configuration."""
 
 import os
-from dataclasses import dataclass, replace
+from dataclasses import dataclass, field, replace
 from datetime import timedelta
 from pathlib import Path
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
@@ -24,8 +24,8 @@ def _bool(value: str) -> bool:
 
 @dataclass(frozen=True, slots=True)
 class Settings:
-    special_webhook_url: str = ""
-    unusual_webhook_url: str = ""
+    special_webhook_url: str = field(default="", repr=False)
+    unusual_webhook_url: str = field(default="", repr=False)
     airport_iata: str = "BTS"
     airport_icao: str = "LZIB"
     airport_latitude: float = DEFAULT_AIRPORT_LATITUDE

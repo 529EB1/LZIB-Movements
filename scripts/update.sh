@@ -8,9 +8,13 @@ systemctl stop lzib-movements || true
 backup=$(mktemp -d /opt/lzib-movements-backup.XXXXXX)
 cp -a "$APP_DIR/." "$backup/"
 rollback() {
+  trap - ERR
   echo "Update validation failed; restoring the previous application." >&2
   rm -rf "$APP_DIR"; mv "$backup" "$APP_DIR"
-  $was_active && systemctl start lzib-movements
+  if $was_active; then
+    systemctl start lzib-movements
+  fi
+  exit 1
 }
 trap rollback ERR
 git -C "$APP_DIR" pull --ff-only

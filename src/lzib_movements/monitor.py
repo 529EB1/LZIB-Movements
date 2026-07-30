@@ -82,9 +82,9 @@ class Monitor:
                     except RuntimeError as error:
                         LOGGER.error("Alert delivery failed: %s", error)
                         continue
-                self.database.record_alert(
-                    decision.alert_key, decision.alert_type, detected_at, decision.reason
-                )
+                    self.database.record_alert(
+                        decision.alert_key, decision.alert_type, detected_at, decision.reason
+                    )
                 decisions.append(decision)
         self.database.cleanup(detected_at)
         return decisions

@@ -27,6 +27,13 @@ def normalize_callsign(value: object) -> str | None:
     if not isinstance(value, str):
         return None
     normalized = re.sub(r"[^A-Z0-9]", "", value.upper())
+    match = re.fullmatch(r"([A-Z]{2,3}|[A-Z][0-9]|[0-9][A-Z])(\d[A-Z0-9]*)", normalized)
+    if match:
+        code, number = match.groups()
+        number = number.lstrip("0")
+        if not number or number.isalpha():
+            number = f"0{number}"
+        normalized = f"{code}{number}"
     return normalized or None
 
 
