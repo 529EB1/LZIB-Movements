@@ -1,0 +1,8 @@
+-r requirements.lock
+iniconfig==2.1.0
+mypy==1.17.0
+mypy_extensions==1.1.0
+Pygments==2.19.2
+pytest==8.4.1
+ruff==0.12.7
+typing_extensions==4.14.1

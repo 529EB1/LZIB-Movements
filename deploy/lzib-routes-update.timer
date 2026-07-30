@@ -1,0 +1,12 @@
+[Unit]
+Description=Daily LZIB Movements route update
+
+[Timer]
+OnBootSec=20min
+OnUnitActiveSec=24h
+RandomizedDelaySec=30min
+Persistent=true
+
+[Install]
+WantedBy=timers.target
+

@@ -1,0 +1,33 @@
+[Unit]
+Description=LZIB Movements aircraft alert service
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=lzib-movements
+Group=lzib-movements
+WorkingDirectory=/opt/lzib-movements
+EnvironmentFile=/etc/lzib-movements.env
+ExecStart=/opt/lzib-movements/.venv/bin/python -m lzib_movements
+Restart=on-failure
+RestartSec=15s
+NoNewPrivileges=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectSystem=strict
+ProtectHome=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+RestrictRealtime=true
+LockPersonality=true
+ReadWritePaths=/var/lib/lzib-movements
+UMask=0027
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
+
