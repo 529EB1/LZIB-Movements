@@ -209,6 +209,18 @@ tempCodeRunnerFile.py
 # PyPI configuration file
 .pypirc
 
+# LZIB Movements runtime and secret data
+data/*.db
+data/*.db-*
+data/*.sqlite*
+*.log
+*.zip
+*.tar.gz
+route-data/
+tmp/
+/deploy/lzib-movements.env
+
+
 # Marimo
 marimo/_static/
 marimo/_lsp/
